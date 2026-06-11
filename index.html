@@ -1,0 +1,1555 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="theme-color" content="#0a0e1a">
+<title>Meta PC · Misión de Ahorro</title>
+<style>
+  /* ===========================
+     TOKENS & RESET
+  =========================== */
+  :root {
+    --bg:         #0a0e1a;
+    --surface:    #111827;
+    --surface2:   #1a2235;
+    --surface3:   #1e2d40;
+    --border:     #1f2d44;
+    --accent:     #10b981;
+    --accent-dim: #065f46;
+    --gold:       #f59e0b;
+    --gold-dim:   #78350f;
+    --red:        #ef4444;
+    --red-dim:    #7f1d1d;
+    --blue:       #3b82f6;
+    --txt:        #f1f5f9;
+    --txt2:       #94a3b8;
+    --txt3:       #4b5563;
+    --radius:     14px;
+    --radius-sm:  8px;
+    --shadow:     0 4px 24px rgba(0,0,0,.45);
+    --shadow-sm:  0 2px 8px rgba(0,0,0,.3);
+    --transition: .2s ease;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--txt);
+    min-height: 100vh;
+    padding-bottom: 100px; /* space for sticky bar */
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ===========================
+     LAYOUT
+  =========================== */
+  .container {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 0 16px;
+  }
+
+  /* ===========================
+     HEADER
+  =========================== */
+  .app-header {
+    padding: 32px 16px 0;
+    text-align: center;
+    position: relative;
+  }
+
+  .header-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    background: rgba(16,185,129,.1);
+    border: 1px solid rgba(16,185,129,.2);
+    padding: 4px 12px;
+    border-radius: 999px;
+    margin-bottom: 12px;
+  }
+
+  .header-eyebrow::before { content: "⚡"; }
+
+  .app-title {
+    font-size: clamp(28px, 6vw, 42px);
+    font-weight: 800;
+    letter-spacing: -.02em;
+    color: var(--txt);
+    line-height: 1.1;
+  }
+
+  .app-subtitle {
+    font-size: 14px;
+    color: var(--txt2);
+    margin-top: 6px;
+    font-weight: 400;
+  }
+
+  /* ===========================
+     MISSION RING (hero)
+  =========================== */
+  .ring-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 32px 0 8px;
+    position: relative;
+  }
+
+  .ring-wrapper {
+    position: relative;
+    width: 220px;
+    height: 220px;
+    flex-shrink: 0;
+  }
+
+  .ring-svg {
+    width: 100%;
+    height: 100%;
+    transform: rotate(-90deg);
+  }
+
+  .ring-track {
+    fill: none;
+    stroke: var(--surface3);
+    stroke-width: 14;
+  }
+
+  .ring-fill {
+    fill: none;
+    stroke: url(#ringGrad);
+    stroke-width: 14;
+    stroke-linecap: round;
+    stroke-dasharray: 565;
+    stroke-dashoffset: 565;
+    transition: stroke-dashoffset 1.2s cubic-bezier(.4,0,.2,1);
+  }
+
+  .ring-center {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+  }
+
+  .ring-pct {
+    font-size: 42px;
+    font-weight: 900;
+    letter-spacing: -.04em;
+    line-height: 1;
+    background: linear-gradient(135deg, var(--accent), var(--gold));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .ring-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--txt3);
+  }
+
+  /* ===========================
+     CARDS
+  =========================== */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    box-shadow: var(--shadow-sm);
+    margin-bottom: 14px;
+  }
+
+  .card-title {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--txt3);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .card-title span { font-size: 14px; }
+
+  /* ===========================
+     STATS ROW (progress numbers)
+  =========================== */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+
+  .stat-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px 12px;
+    text-align: center;
+  }
+
+  .stat-box.accent-box {
+    background: rgba(16,185,129,.06);
+    border-color: rgba(16,185,129,.25);
+  }
+
+  .stat-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--txt3);
+    margin-bottom: 4px;
+  }
+
+  .stat-value {
+    font-size: clamp(16px, 3.5vw, 20px);
+    font-weight: 800;
+    letter-spacing: -.02em;
+    color: var(--txt);
+    line-height: 1.1;
+  }
+
+  .stat-value.green { color: var(--accent); }
+  .stat-value.gold  { color: var(--gold); }
+  .stat-value.red   { color: var(--red); }
+
+  /* ===========================
+     PROGRESS BAR
+  =========================== */
+  .progress-bar-wrap {
+    margin-top: 4px;
+  }
+
+  .progress-bar-track {
+    background: var(--surface3);
+    border-radius: 999px;
+    height: 10px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .progress-bar-fill {
+    height: 100%;
+    border-radius: 999px;
+    background: linear-gradient(90deg, var(--accent), var(--gold));
+    transition: width 1.2s cubic-bezier(.4,0,.2,1);
+    position: relative;
+  }
+
+  .progress-bar-fill::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent 60%, rgba(255,255,255,.18));
+    border-radius: 999px;
+  }
+
+  .progress-milestones {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 6px;
+  }
+
+  .milestone {
+    font-size: 10px;
+    color: var(--txt3);
+    text-align: center;
+    flex: 1;
+    position: relative;
+  }
+
+  .milestone.reached { color: var(--accent); font-weight: 700; }
+
+  /* ===========================
+     MOTIVATIONAL MESSAGE
+  =========================== */
+  .motive-msg {
+    background: rgba(16,185,129,.07);
+    border: 1px solid rgba(16,185,129,.18);
+    border-radius: var(--radius-sm);
+    padding: 12px 16px;
+    font-size: 13px;
+    color: var(--accent);
+    font-weight: 500;
+    text-align: center;
+    margin-bottom: 14px;
+    line-height: 1.4;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity .4s ease;
+  }
+
+  /* ===========================
+     QUICK BUTTONS
+  =========================== */
+  .quick-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
+  .quick-btn {
+    border: none;
+    border-radius: var(--radius-sm);
+    padding: 12px 4px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform var(--transition), opacity var(--transition);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    letter-spacing: -.01em;
+    min-height: 48px;
+  }
+
+  .quick-btn:active { transform: scale(.94); }
+
+  .quick-btn.pos {
+    background: rgba(16,185,129,.14);
+    color: var(--accent);
+    border: 1px solid rgba(16,185,129,.3);
+  }
+
+  .quick-btn.neg {
+    background: rgba(239,68,68,.1);
+    color: var(--red);
+    border: 1px solid rgba(239,68,68,.25);
+  }
+
+  /* ===========================
+     INPUT ROW
+  =========================== */
+  .input-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+
+  .input-field {
+    flex: 1;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 12px 14px;
+    font-size: 16px; /* prevents iOS zoom */
+    color: var(--txt);
+    outline: none;
+    transition: border-color var(--transition);
+    font-family: inherit;
+  }
+
+  .input-field:focus {
+    border-color: var(--accent);
+  }
+
+  .input-field::placeholder { color: var(--txt3); }
+
+  .desc-field {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 10px 14px;
+    font-size: 14px;
+    color: var(--txt);
+    outline: none;
+    transition: border-color var(--transition);
+    font-family: inherit;
+    width: 100%;
+    margin-bottom: 10px;
+  }
+
+  .desc-field:focus { border-color: rgba(16,185,129,.5); }
+  .desc-field::placeholder { color: var(--txt3); }
+
+  .add-btn {
+    background: linear-gradient(135deg, var(--accent), #059669);
+    color: #fff;
+    border: none;
+    border-radius: var(--radius-sm);
+    padding: 12px 20px;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    min-width: 80px;
+    transition: opacity var(--transition), transform var(--transition);
+    font-family: inherit;
+    letter-spacing: -.01em;
+  }
+
+  .add-btn:active { transform: scale(.95); opacity: .9; }
+
+  .sign-toggle {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+
+  .sign-btn {
+    flex: 1;
+    padding: 10px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+    background: var(--surface2);
+    color: var(--txt2);
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all var(--transition);
+    font-family: inherit;
+  }
+
+  .sign-btn.active-pos {
+    background: rgba(16,185,129,.18);
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .sign-btn.active-neg {
+    background: rgba(239,68,68,.12);
+    border-color: var(--red);
+    color: var(--red);
+  }
+
+  /* ===========================
+     HISTORY
+  =========================== */
+  .history-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-height: 420px;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
+  }
+
+  .history-item {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 12px 14px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    animation: slideIn .25s ease;
+  }
+
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateY(-8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .item-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .item-dot.pos { background: var(--accent); }
+  .item-dot.neg { background: var(--red); }
+
+  .item-info { flex: 1; min-width: 0; }
+
+  .item-amount {
+    font-size: 16px;
+    font-weight: 800;
+    letter-spacing: -.01em;
+    line-height: 1.2;
+  }
+
+  .item-amount.pos { color: var(--accent); }
+  .item-amount.neg { color: var(--red); }
+
+  .item-desc {
+    font-size: 12px;
+    color: var(--txt2);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .item-date {
+    font-size: 11px;
+    color: var(--txt3);
+    text-align: right;
+    flex-shrink: 0;
+    line-height: 1.4;
+  }
+
+  .item-actions {
+    display: flex;
+    gap: 4px;
+    flex-shrink: 0;
+  }
+
+  .icon-btn {
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    width: 30px; height: 30px;
+    font-size: 13px;
+    cursor: pointer;
+    color: var(--txt2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all var(--transition);
+  }
+
+  .icon-btn:hover { border-color: var(--txt2); color: var(--txt); }
+  .icon-btn.del:hover { border-color: var(--red); color: var(--red); }
+
+  .empty-history {
+    text-align: center;
+    padding: 32px 0;
+    color: var(--txt3);
+    font-size: 13px;
+  }
+
+  .empty-history .big { font-size: 32px; margin-bottom: 8px; }
+
+  /* ===========================
+     TODAY STATS
+  =========================== */
+  .today-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+  }
+
+  /* ===========================
+     EXTRA STATS
+  =========================== */
+  .extra-stats {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .stat-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+  }
+
+  .stat-row:last-child { border-bottom: none; }
+
+  .stat-row-label { color: var(--txt2); }
+  .stat-row-val   { color: var(--txt); font-weight: 700; }
+  .stat-row-val.accent { color: var(--accent); }
+  .stat-row-val.gold   { color: var(--gold); }
+
+  /* ===========================
+     ACHIEVEMENTS
+  =========================== */
+  .achievements {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .badge {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 12px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
+    border: 1px solid;
+    opacity: .35;
+    transition: opacity .4s ease, background .4s ease;
+  }
+
+  .badge.unlocked { opacity: 1; }
+
+  .badge.b1 { background: rgba(16,185,129,.1); border-color: rgba(16,185,129,.3); color: var(--accent); }
+  .badge.b2 { background: rgba(245,158,11,.1); border-color: rgba(245,158,11,.3); color: var(--gold); }
+  .badge.b3 { background: rgba(59,130,246,.1); border-color: rgba(59,130,246,.3); color: var(--blue); }
+  .badge.b4 { background: rgba(167,139,250,.1); border-color: rgba(167,139,250,.3); color: #a78bfa; }
+
+  /* ===========================
+     ACTION BUTTONS (export/import/reset)
+  =========================== */
+  .action-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 10px;
+  }
+
+  .act-btn {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 12px 8px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--txt2);
+    cursor: pointer;
+    font-family: inherit;
+    transition: all var(--transition);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    text-align: center;
+    line-height: 1.3;
+  }
+
+  .act-btn .act-icon { font-size: 18px; }
+
+  .act-btn:hover  { border-color: var(--txt2); color: var(--txt); }
+  .act-btn.danger:hover { border-color: var(--red); color: var(--red); }
+
+  /* ===========================
+     CELEBRATION OVERLAY
+  =========================== */
+  .celebrate {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.8);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 999;
+    gap: 16px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .4s ease;
+  }
+
+  .celebrate.show { opacity: 1; pointer-events: all; }
+
+  .celebrate-emoji { font-size: 72px; animation: bounce 1s ease infinite alternate; }
+  @keyframes bounce { from { transform: scale(1); } to { transform: scale(1.15); } }
+
+  .celebrate-text {
+    font-size: 28px;
+    font-weight: 900;
+    text-align: center;
+    color: var(--txt);
+    max-width: 280px;
+    line-height: 1.2;
+  }
+
+  .celebrate-sub {
+    font-size: 14px;
+    color: var(--txt2);
+    text-align: center;
+  }
+
+  .celebrate-close {
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    padding: 14px 36px;
+    border-radius: var(--radius-sm);
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: inherit;
+    margin-top: 8px;
+  }
+
+  /* ===========================
+     EDIT MODAL
+  =========================== */
+  .modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.75);
+    z-index: 900;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .25s ease;
+  }
+
+  .modal-backdrop.show { opacity: 1; pointer-events: all; }
+
+  .modal {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius) var(--radius) 0 0;
+    padding: 24px 20px;
+    width: 100%;
+    max-width: 680px;
+    transform: translateY(30px);
+    transition: transform .25s ease;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .modal-backdrop.show .modal { transform: translateY(0); }
+
+  .modal-title {
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+
+  .modal-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 4px;
+  }
+
+  .modal-btn {
+    flex: 1;
+    padding: 12px;
+    border-radius: var(--radius-sm);
+    border: none;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: inherit;
+  }
+
+  .modal-btn.cancel { background: var(--surface2); color: var(--txt2); }
+  .modal-btn.save   { background: var(--accent); color: #fff; }
+
+  /* ===========================
+     TOAST
+  =========================== */
+  .toast {
+    position: fixed;
+    bottom: 90px;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 10px 22px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--txt);
+    z-index: 800;
+    opacity: 0;
+    transition: all .3s ease;
+    white-space: nowrap;
+    box-shadow: var(--shadow);
+  }
+
+  .toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  /* ===========================
+     STICKY BOTTOM BAR (mobile UX)
+  =========================== */
+  .sticky-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0; right: 0;
+    background: rgba(10,14,26,.92);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-top: 1px solid var(--border);
+    padding: 12px 16px;
+    z-index: 700;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    max-width: 100%;
+  }
+
+  .sticky-bar input {
+    flex: 1;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 11px 14px;
+    font-size: 16px;
+    color: var(--txt);
+    outline: none;
+    font-family: inherit;
+    min-width: 0;
+  }
+
+  .sticky-bar input:focus { border-color: var(--accent); }
+  .sticky-bar input::placeholder { color: var(--txt3); }
+
+  .sticky-sign {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 11px 14px;
+    font-size: 18px;
+    font-weight: 900;
+    cursor: pointer;
+    color: var(--accent);
+    min-width: 46px;
+    text-align: center;
+    transition: all var(--transition);
+    flex-shrink: 0;
+  }
+
+  .sticky-sign.neg { color: var(--red); border-color: rgba(239,68,68,.3); }
+
+  .sticky-go {
+    background: linear-gradient(135deg, var(--accent), #059669);
+    border: none;
+    border-radius: var(--radius-sm);
+    padding: 11px 16px;
+    font-size: 20px;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: transform var(--transition);
+  }
+
+  .sticky-go:active { transform: scale(.92); }
+
+  /* ===========================
+     SECTION SPACING
+  =========================== */
+  section {
+    padding: 0 16px;
+    margin-bottom: 0;
+  }
+
+  .section-gap { margin-bottom: 14px; }
+
+  /* ===========================
+     FOOTER
+  =========================== */
+  .app-footer {
+    text-align: center;
+    padding: 20px 16px 8px;
+    font-size: 11px;
+    color: var(--txt3);
+  }
+
+  /* ===========================
+     UTILITIES
+  =========================== */
+  .hidden { display: none !important; }
+  .text-center { text-align: center; }
+
+  /* File input hidden */
+  #importFile { display: none; }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+  /* ===========================
+     ANIMATIONS
+  =========================== */
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .card { animation: fadeIn .4s ease both; }
+  .stats-row { animation: fadeIn .35s ease both; }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ======================== CELEBRATION ======================== -->
+<div class="celebrate" id="celebrateOverlay">
+  <div class="celebrate-emoji" id="celebrateEmoji">🎉</div>
+  <div class="celebrate-text" id="celebrateTitle">¡Meta alcanzada!</div>
+  <div class="celebrate-sub" id="celebrateSub">Sigue así, lo estás logrando.</div>
+  <button class="celebrate-close" onclick="closeCelebrate()">¡Increíble! →</button>
+</div>
+
+<!-- ======================== EDIT MODAL ======================== -->
+<div class="modal-backdrop" id="editModal">
+  <div class="modal">
+    <div class="modal-title">✏️ Editar movimiento</div>
+    <input type="number" class="input-field" id="editAmount" placeholder="Monto (ej. 500)" inputmode="decimal">
+    <input type="text" class="desc-field" id="editDesc" placeholder="Descripción (opcional)">
+    <div class="modal-actions">
+      <button class="modal-btn cancel" onclick="closeEdit()">Cancelar</button>
+      <button class="modal-btn save" onclick="saveEdit()">Guardar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ======================== TOAST ======================== -->
+<div class="toast" id="toast"></div>
+
+<!-- ======================== APP ======================== -->
+
+<!-- Header -->
+<header class="app-header">
+  <div class="header-eyebrow">Misión activa</div>
+  <h1 class="app-title">Meta PC</h1>
+  <p class="app-subtitle">Cada peso que guardas te acerca más.</p>
+</header>
+
+<!-- Ring hero -->
+<div class="ring-section">
+  <div class="ring-wrapper">
+    <svg class="ring-svg" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stop-color="#10b981"/>
+          <stop offset="100%" stop-color="#f59e0b"/>
+        </linearGradient>
+      </defs>
+      <circle class="ring-track" cx="100" cy="100" r="90"/>
+      <circle class="ring-fill" id="ringFill" cx="100" cy="100" r="90"/>
+    </svg>
+    <div class="ring-center">
+      <div class="ring-pct" id="ringPct">0%</div>
+      <div class="ring-label">completado</div>
+    </div>
+  </div>
+</div>
+
+<!-- Motivational message -->
+<section>
+  <div class="motive-msg" id="motiveMsg">Cargando tu misión...</div>
+</section>
+
+<!-- Stats row -->
+<section>
+  <div class="stats-row">
+    <div class="stat-box">
+      <div class="stat-label">Meta total</div>
+      <div class="stat-value gold" id="statGoal">$0</div>
+    </div>
+    <div class="stat-box accent-box">
+      <div class="stat-label">Ahorrado</div>
+      <div class="stat-value green" id="statSaved">$0</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-label">Faltante</div>
+      <div class="stat-value" id="statLeft">$0</div>
+    </div>
+  </div>
+</section>
+
+<!-- Progress bar -->
+<section class="section-gap">
+  <div class="progress-bar-wrap">
+    <div class="progress-bar-track">
+      <div class="progress-bar-fill" id="progressBar" style="width:0%"></div>
+    </div>
+    <div class="progress-milestones">
+      <div class="milestone" id="m25">25%</div>
+      <div class="milestone" id="m50">50%</div>
+      <div class="milestone" id="m75">75%</div>
+      <div class="milestone" id="m90">90%</div>
+      <div class="milestone" id="m100">100%</div>
+    </div>
+  </div>
+</section>
+
+<!-- Quick register -->
+<section class="section-gap">
+  <div class="card">
+    <div class="card-title"><span>⚡</span>Registro rápido</div>
+    <div class="quick-grid">
+      <button class="quick-btn pos" onclick="quickAdd(100)">+$100</button>
+      <button class="quick-btn pos" onclick="quickAdd(500)">+$500</button>
+      <button class="quick-btn pos" onclick="quickAdd(1000)">+$1,000</button>
+      <button class="quick-btn neg" onclick="quickAdd(-100)">-$100</button>
+      <button class="quick-btn neg" onclick="quickAdd(-500)">-$500</button>
+      <button class="quick-btn neg" onclick="quickAdd(-1000)">-$1,000</button>
+    </div>
+  </div>
+</section>
+
+<!-- Manual register -->
+<section class="section-gap">
+  <div class="card">
+    <div class="card-title"><span>✍️</span>Registro manual</div>
+    <div class="sign-toggle">
+      <button class="sign-btn active-pos" id="signPos" onclick="setSign(1)">+ Ingreso</button>
+      <button class="sign-btn" id="signNeg" onclick="setSign(-1)">− Gasto</button>
+    </div>
+    <div class="input-row">
+      <input type="number" class="input-field" id="manualAmount" placeholder="Monto" inputmode="decimal" min="0" step="any">
+      <button class="add-btn" onclick="addManual()">Agregar</button>
+    </div>
+    <input type="text" class="desc-field" id="manualDesc" placeholder="Descripción (opcional)">
+  </div>
+</section>
+
+<!-- Today's stats -->
+<section class="section-gap">
+  <div class="card">
+    <div class="card-title"><span>📅</span>Hoy</div>
+    <div class="today-grid">
+      <div class="stat-box">
+        <div class="stat-label">Ingresado</div>
+        <div class="stat-value green" id="todayIn">$0</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-label">Gastado</div>
+        <div class="stat-value red" id="todayOut">$0</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-label">Balance</div>
+        <div class="stat-value" id="todayBalance">$0</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Extra stats -->
+<section class="section-gap">
+  <div class="card">
+    <div class="card-title"><span>📊</span>Estadísticas</div>
+    <div class="extra-stats">
+      <div class="stat-row">
+        <span class="stat-row-label">Promedio diario de ahorro</span>
+        <span class="stat-row-val accent" id="statAvgDaily">–</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-row-label">Días consecutivos registrando</span>
+        <span class="stat-row-val" id="statStreak">–</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-row-label">Fecha estimada para llegar a la meta</span>
+        <span class="stat-row-val gold" id="statETA">–</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-row-label">Falta para el 50%</span>
+        <span class="stat-row-val" id="statTo50">–</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-row-label">Falta para el 75%</span>
+        <span class="stat-row-val" id="statTo75">–</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-row-label">Falta para el 90%</span>
+        <span class="stat-row-val" id="statTo90">–</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-row-label">Total de movimientos</span>
+        <span class="stat-row-val" id="statCount">0</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Achievements -->
+<section class="section-gap">
+  <div class="card">
+    <div class="card-title"><span>🏅</span>Logros</div>
+    <div class="achievements">
+      <div class="badge b1" id="badge25">✅ Primer cuarto</div>
+      <div class="badge b2" id="badge50">⭐ Mitad del camino</div>
+      <div class="badge b3" id="badge75">🚀 Casi ahí</div>
+      <div class="badge b4" id="badge100">🏆 ¡Meta alcanzada!</div>
+    </div>
+  </div>
+</section>
+
+<!-- History -->
+<section class="section-gap">
+  <div class="card">
+    <div class="card-title"><span>🗂</span>Historial</div>
+    <div class="history-list" id="historyList">
+      <div class="empty-history">
+        <div class="big">📭</div>
+        <div>Aún no hay movimientos.<br>¡Registra tu primer ahorro!</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Export / Import / Reset -->
+<section class="section-gap">
+  <div class="card">
+    <div class="card-title"><span>⚙️</span>Datos</div>
+    <div class="action-grid">
+      <button class="act-btn" onclick="exportData()">
+        <span class="act-icon">📤</span>Exportar JSON
+      </button>
+      <button class="act-btn" onclick="document.getElementById('importFile').click()">
+        <span class="act-icon">📥</span>Importar JSON
+      </button>
+      <button class="act-btn danger" onclick="resetAll()">
+        <span class="act-icon">🗑</span>Reiniciar todo
+      </button>
+    </div>
+    <input type="file" id="importFile" accept=".json" onchange="importData(event)">
+  </div>
+</section>
+
+<div class="app-footer">Meta PC · Misión de Ahorro Personal</div>
+
+<!-- Sticky bottom bar -->
+<div class="sticky-bar">
+  <button class="sticky-sign" id="stickySign" onclick="toggleStickySign()">+</button>
+  <input type="number" id="stickyAmount" placeholder="Monto rápido..." inputmode="decimal" min="0" step="any"
+         onkeydown="if(event.key==='Enter')addSticky()">
+  <button class="sticky-go" onclick="addSticky()">✓</button>
+</div>
+
+<script>
+/* ============================================================
+   APP STATE
+============================================================ */
+const GOAL   = 22499;
+const INITIAL = 10800;
+
+let state = {
+  saved: INITIAL,
+  moves: [],           // { id, amount, desc, ts }
+  lastCelebrated: null // which milestone was last celebrated
+};
+
+let currentSign   = 1;  // manual form
+let stickySign    = 1;  // sticky bar
+let editId        = null;
+
+/* Motivational phrases per % range */
+const phrases = [
+  [0,  10,  "El viaje de mil millas empieza con un solo paso. ¡Vamos! 💪"],
+  [10, 25,  "¡Ya arrancaste! Cada peso cuenta. Sigue sumando. 🌱"],
+  [25, 40,  "¡Un cuarto del camino! El momentum está contigo. 🔥"],
+  [40, 50,  "Casi en la mitad. Tu disciplina está funcionando. ⚡"],
+  [50, 65,  "¡Más de la mitad! Nadie puede detenerte ahora. 🚀"],
+  [65, 75,  "¡Tres cuartos a la vista! Ya casi hueles la PC. 🖥"],
+  [75, 90,  "¡Zona final! Estás en el último tramo. Todo o nada. 🏁"],
+  [90, 99,  "¡Tan cerca que ya puedes tocarla! Solo un poco más. 💥"],
+  [99, 100, "¡ES TUYA! Un último esfuerzo y cruzas la meta. 🏆"],
+  [100,101, "🎉 ¡MISIÓN COMPLETADA! ¡Mereces esa PC, campeón!"],
+];
+
+/* ============================================================
+   PERSISTENCE
+============================================================ */
+function save() {
+  localStorage.setItem('metaPC_v2', JSON.stringify(state));
+}
+
+function load() {
+  const raw = localStorage.getItem('metaPC_v2');
+  if (raw) {
+    try { state = JSON.parse(raw); } catch(e) { /* use defaults */ }
+  }
+}
+
+/* ============================================================
+   FORMATTING
+============================================================ */
+function mxn(n) {
+  return new Intl.NumberFormat('es-MX', { style: 'currency', currency: 'MXN', maximumFractionDigits: 2 }).format(n);
+}
+
+function dateStr(ts) {
+  const d = new Date(ts);
+  return d.toLocaleDateString('es-MX', { day:'2-digit', month:'short' });
+}
+
+function timeStr(ts) {
+  const d = new Date(ts);
+  return d.toLocaleTimeString('es-MX', { hour:'2-digit', minute:'2-digit' });
+}
+
+function todayKey() {
+  const d = new Date();
+  return `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
+}
+
+function moveKey(ts) {
+  const d = new Date(ts);
+  return `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
+}
+
+/* ============================================================
+   RENDER
+============================================================ */
+function render() {
+  const pct    = Math.min(state.saved / GOAL, 1);
+  const pctNum = Math.round(pct * 100);
+  const left   = Math.max(GOAL - state.saved, 0);
+
+  /* Ring */
+  const circ = 2 * Math.PI * 90; // 565.48
+  const offset = circ * (1 - pct);
+  document.getElementById('ringFill').style.strokeDashoffset = offset;
+  document.getElementById('ringPct').textContent = pctNum + '%';
+
+  /* Stats row */
+  document.getElementById('statGoal').textContent  = mxn(GOAL);
+  document.getElementById('statSaved').textContent = mxn(state.saved);
+  document.getElementById('statLeft').textContent  = mxn(left);
+
+  /* Progress bar */
+  document.getElementById('progressBar').style.width = Math.min(pct * 100, 100) + '%';
+
+  /* Milestones */
+  [[25,'m25'],[50,'m50'],[75,'m75'],[90,'m90'],[100,'m100']].forEach(([t,id]) => {
+    document.getElementById(id).classList.toggle('reached', pctNum >= t);
+  });
+
+  /* Motive message */
+  const p = phrases.find(([lo, hi]) => pctNum >= lo && pctNum < hi) || phrases[phrases.length-1];
+  document.getElementById('motiveMsg').textContent = p[2];
+
+  /* Today stats */
+  const tk = todayKey();
+  let todIn = 0, todOut = 0;
+  state.moves.forEach(m => {
+    if (moveKey(m.ts) === tk) {
+      if (m.amount > 0) todIn  += m.amount;
+      else              todOut += Math.abs(m.amount);
+    }
+  });
+  const todBal = todIn - todOut;
+  document.getElementById('todayIn').textContent      = mxn(todIn);
+  document.getElementById('todayOut').textContent     = mxn(todOut);
+  const balEl = document.getElementById('todayBalance');
+  balEl.textContent = mxn(todBal);
+  balEl.className   = 'stat-value ' + (todBal >= 0 ? 'green' : 'red');
+
+  /* Extra stats */
+  // Average daily (from first move date to today)
+  const allAmounts = state.moves.map(m => m.amount);
+  const netFromMoves = allAmounts.reduce((a,b) => a+b, 0);
+  const firstTs = state.moves.length ? Math.min(...state.moves.map(m => m.ts)) : null;
+  let avgDaily = '–';
+  let etaText  = '–';
+  if (firstTs) {
+    const daysPassed = Math.max(1, Math.ceil((Date.now() - firstTs) / 86400000));
+    const netPos = state.moves.filter(m => m.amount > 0).reduce((a,m) => a+m.amount,0);
+    const dailyRate = netPos / daysPassed;
+    avgDaily = dailyRate > 0 ? mxn(dailyRate) + '/día' : '–';
+    if (dailyRate > 0 && state.saved < GOAL) {
+      const daysLeft = Math.ceil(left / dailyRate);
+      const eta = new Date(Date.now() + daysLeft * 86400000);
+      etaText = eta.toLocaleDateString('es-MX', { day:'2-digit', month:'long', year:'numeric' });
+    } else if (state.saved >= GOAL) {
+      etaText = '✅ ¡Meta alcanzada!';
+    }
+  }
+  document.getElementById('statAvgDaily').textContent = avgDaily;
+  document.getElementById('statETA').textContent      = etaText;
+
+  // Streak
+  const streak = calcStreak();
+  document.getElementById('statStreak').textContent = streak > 0 ? `${streak} día${streak>1?'s':''}` : '–';
+
+  // To milestones
+  const g50  = GOAL * 0.50;
+  const g75  = GOAL * 0.75;
+  const g90  = GOAL * 0.90;
+  document.getElementById('statTo50').textContent = state.saved >= g50  ? '✅ Alcanzado' : mxn(g50 - state.saved);
+  document.getElementById('statTo75').textContent = state.saved >= g75  ? '✅ Alcanzado' : mxn(g75 - state.saved);
+  document.getElementById('statTo90').textContent = state.saved >= g90  ? '✅ Alcanzado' : mxn(g90 - state.saved);
+  document.getElementById('statCount').textContent = state.moves.length;
+
+  /* Achievements */
+  document.getElementById('badge25').classList.toggle('unlocked', pctNum >= 25);
+  document.getElementById('badge50').classList.toggle('unlocked', pctNum >= 50);
+  document.getElementById('badge75').classList.toggle('unlocked', pctNum >= 75);
+  document.getElementById('badge100').classList.toggle('unlocked', pctNum >= 100);
+
+  /* History */
+  renderHistory();
+
+  /* Celebrations */
+  checkCelebrate(pctNum);
+}
+
+function renderHistory() {
+  const list = document.getElementById('historyList');
+  if (!state.moves.length) {
+    list.innerHTML = `<div class="empty-history"><div class="big">📭</div><div>Aún no hay movimientos.<br>¡Registra tu primer ahorro!</div></div>`;
+    return;
+  }
+  const sorted = [...state.moves].sort((a,b) => b.ts - a.ts);
+  list.innerHTML = sorted.map(m => {
+    const cls = m.amount >= 0 ? 'pos' : 'neg';
+    const sign = m.amount >= 0 ? '+' : '';
+    return `<div class="history-item">
+      <div class="item-dot ${cls}"></div>
+      <div class="item-info">
+        <div class="item-amount ${cls}">${sign}${mxn(m.amount)}</div>
+        <div class="item-desc">${m.desc || (m.amount >= 0 ? 'Ingreso' : 'Gasto')}</div>
+      </div>
+      <div class="item-date">${dateStr(m.ts)}<br>${timeStr(m.ts)}</div>
+      <div class="item-actions">
+        <button class="icon-btn" onclick="openEdit('${m.id}')" title="Editar">✏️</button>
+        <button class="icon-btn del" onclick="deleteMove('${m.id}')" title="Eliminar">🗑</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+/* ============================================================
+   STREAK CALC
+============================================================ */
+function calcStreak() {
+  if (!state.moves.length) return 0;
+  const days = new Set(state.moves.map(m => moveKey(m.ts)));
+  let streak = 0;
+  let cur = new Date();
+  // Check if today or yesterday has activity (allow gap of 1 day for "today")
+  while (true) {
+    const k = `${cur.getFullYear()}-${cur.getMonth()}-${cur.getDate()}`;
+    if (days.has(k)) {
+      streak++;
+      cur.setDate(cur.getDate() - 1);
+    } else {
+      break;
+    }
+  }
+  return streak;
+}
+
+/* ============================================================
+   CELEBRATIONS
+============================================================ */
+function checkCelebrate(pct) {
+  const milestones = [
+    [25,  '🎯', '¡Primer cuarto!',    'Ya vas 25%. El motor está encendido.'],
+    [50,  '⭐', '¡Mitad del camino!', '50% completado. Increíble disciplina.'],
+    [75,  '🚀', '¡Casi ahí!',         '75% logrado. El final está cerca.'],
+    [100, '🏆', '¡MISIÓN COMPLETADA!','¡La PC es tuya! Lo lograste, campeón.'],
+  ];
+
+  for (const [target, emoji, title, sub] of milestones) {
+    if (pct >= target && state.lastCelebrated !== target) {
+      state.lastCelebrated = target;
+      save();
+      showCelebrate(emoji, title, sub);
+      return;
+    }
+  }
+}
+
+function showCelebrate(emoji, title, sub) {
+  document.getElementById('celebrateEmoji').textContent = emoji;
+  document.getElementById('celebrateTitle').textContent = title;
+  document.getElementById('celebrateSub').textContent   = sub;
+  document.getElementById('celebrateOverlay').classList.add('show');
+}
+
+function closeCelebrate() {
+  document.getElementById('celebrateOverlay').classList.remove('show');
+}
+
+/* ============================================================
+   TOAST
+============================================================ */
+let toastTimer;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+/* ============================================================
+   ADD MOVES
+============================================================ */
+function uid() {
+  return Date.now().toString(36) + Math.random().toString(36).slice(2,6);
+}
+
+function addMove(amount, desc) {
+  if (!amount || isNaN(amount) || amount === 0) {
+    showToast('⚠️ Ingresa un monto válido');
+    return false;
+  }
+  const move = { id: uid(), amount: parseFloat(amount.toFixed(2)), desc: desc.trim(), ts: Date.now() };
+  state.moves.push(move);
+  state.saved += move.amount;
+  state.saved = parseFloat(state.saved.toFixed(2));
+  save();
+  render();
+  return true;
+}
+
+function quickAdd(amount) {
+  const desc = amount > 0 ? 'Ahorro rápido' : 'Gasto rápido';
+  if (addMove(amount, desc)) {
+    showToast((amount > 0 ? '✅ +' : '🔻 ') + mxn(Math.abs(amount)) + ' registrado');
+  }
+}
+
+function setSign(s) {
+  currentSign = s;
+  document.getElementById('signPos').className = 'sign-btn' + (s===1 ? ' active-pos' : '');
+  document.getElementById('signNeg').className = 'sign-btn' + (s===-1 ? ' active-neg' : '');
+}
+
+function addManual() {
+  const raw  = parseFloat(document.getElementById('manualAmount').value);
+  const desc = document.getElementById('manualDesc').value;
+  if (!raw || isNaN(raw) || raw <= 0) { showToast('⚠️ Ingresa un monto válido'); return; }
+  const amount = raw * currentSign;
+  if (addMove(amount, desc)) {
+    document.getElementById('manualAmount').value = '';
+    document.getElementById('manualDesc').value   = '';
+    showToast((amount > 0 ? '✅ ' : '🔻 ') + mxn(Math.abs(amount)) + ' registrado');
+  }
+}
+
+/* ============================================================
+   STICKY BAR
+============================================================ */
+function toggleStickySign() {
+  stickySign *= -1;
+  const btn = document.getElementById('stickySign');
+  btn.textContent = stickySign > 0 ? '+' : '−';
+  btn.className   = 'sticky-sign' + (stickySign < 0 ? ' neg' : '');
+}
+
+function addSticky() {
+  const raw = parseFloat(document.getElementById('stickyAmount').value);
+  if (!raw || isNaN(raw) || raw <= 0) { showToast('⚠️ Ingresa un monto válido'); return; }
+  const amount = raw * stickySign;
+  if (addMove(amount, '')) {
+    document.getElementById('stickyAmount').value = '';
+    showToast((amount > 0 ? '✅ ' : '🔻 ') + mxn(Math.abs(amount)));
+  }
+}
+
+/* ============================================================
+   EDIT
+============================================================ */
+function openEdit(id) {
+  const m = state.moves.find(x => x.id === id);
+  if (!m) return;
+  editId = id;
+  document.getElementById('editAmount').value = Math.abs(m.amount);
+  document.getElementById('editDesc').value   = m.desc;
+  document.getElementById('editModal').classList.add('show');
+}
+
+function closeEdit() {
+  editId = null;
+  document.getElementById('editModal').classList.remove('show');
+}
+
+function saveEdit() {
+  const raw  = parseFloat(document.getElementById('editAmount').value);
+  const desc = document.getElementById('editDesc').value;
+  if (!raw || isNaN(raw) || raw <= 0) { showToast('⚠️ Monto inválido'); return; }
+  const m = state.moves.find(x => x.id === editId);
+  if (!m) { closeEdit(); return; }
+  const oldAmount = m.amount;
+  const sign = oldAmount >= 0 ? 1 : -1;
+  m.amount = parseFloat((raw * sign).toFixed(2));
+  m.desc   = desc.trim();
+  state.saved = parseFloat((state.saved - oldAmount + m.amount).toFixed(2));
+  save();
+  render();
+  closeEdit();
+  showToast('✅ Movimiento actualizado');
+}
+
+/* ============================================================
+   DELETE
+============================================================ */
+function deleteMove(id) {
+  const idx = state.moves.findIndex(x => x.id === id);
+  if (idx < 0) return;
+  const m = state.moves[idx];
+  state.saved = parseFloat((state.saved - m.amount).toFixed(2));
+  state.moves.splice(idx, 1);
+  save();
+  render();
+  showToast('🗑 Movimiento eliminado');
+}
+
+/* ============================================================
+   EXPORT / IMPORT / RESET
+============================================================ */
+function exportData() {
+  const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href     = url;
+  a.download = 'meta-pc-respaldo.json';
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('📤 Datos exportados');
+}
+
+function importData(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(ev) {
+    try {
+      const data = JSON.parse(ev.target.result);
+      if (typeof data.saved !== 'number') throw new Error('Formato inválido');
+      state = data;
+      save();
+      render();
+      showToast('📥 Datos importados correctamente');
+    } catch(err) {
+      showToast('❌ Archivo inválido o corrupto');
+    }
+    e.target.value = '';
+  };
+  reader.readAsText(file);
+}
+
+function resetAll() {
+  if (!confirm('⚠️ ¿Estás seguro? Se borrarán todos los datos y se regresará al estado inicial.\n\nEsta acción no se puede deshacer.')) return;
+  state = { saved: INITIAL, moves: [], lastCelebrated: null };
+  save();
+  render();
+  showToast('🔄 App reiniciada');
+}
+
+/* ============================================================
+   CLOSE MODAL ON BACKDROP CLICK
+============================================================ */
+document.getElementById('editModal').addEventListener('click', function(e) {
+  if (e.target === this) closeEdit();
+});
+
+/* ============================================================
+   INIT
+============================================================ */
+load();
+// Defer ring animation so CSS transition fires properly
+requestAnimationFrame(() => requestAnimationFrame(() => render()));
+</script>
+</body>
+</html>
